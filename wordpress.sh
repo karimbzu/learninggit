@@ -1,11 +1,11 @@
 #/bin/sh
 install_dir="/var/www/html"
 #Creating Random WP Database Credenitals
-db_name="wp`date +%s`"
-db_user=$db_name
-db_password=`date |md5sum |cut -c '1-12'`
+db_name=mywordpress
+db_user=root
+db_password=password
 sleep 1
-mysqlrootpass=`date |md5sum |cut -c '1-12'`
+mysqlrootpass=password
 sleep 1
 #### Install Packages for https and mysql
 apt -y update
