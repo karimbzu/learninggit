@@ -12,6 +12,7 @@ apt -y update
 apt -y upgrade
 apt -y install apache2
 apt -y install mysql-server
+apt -y install lynx
 #### Start http
 rm /var/www/html/index.html
 systemctl enable apache2
