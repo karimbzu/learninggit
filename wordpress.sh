@@ -1,5 +1,11 @@
 #/bin/sh
 install_dir="/var/www/html"
+db_name="wordpress"
+db_user=$db_name
+db_password="password"
+sleep 1
+mysqlrootpass="mysql"
+sleep 1
 apt -y update
 apt -y upgrade
 apt -y install apache2
