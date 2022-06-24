@@ -1,0 +1,18 @@
+- name: Launch a compute instance
+  hosts: localhost
+  tasks:
+    - name: Launching Ubuntu VM
+      os_server:
+        image: 9be63e60-f4d8-488e-9200-e95bd470accf
+        key_name: kkey
+        name: Nginx Server
+        availability_zone: nova
+        flavor: std.6
+        state: present
+        network: f20a238f-6355-420f-b6a2-0e18ad80f763
+        validate_certs: no
+        userdata: |
+           #cloud-config
+           runcmd:
+            - sudo -i
+            - wget --no-cache -O - https://raw.githubusercontent.com/karimbzu/learninggit/master/nginx.sh | bash
