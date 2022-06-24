@@ -1,0 +1,38 @@
+- name: Launch a compute instance
+  hosts: localhost
+  tasks:
+    - name: Launching Ubuntu VM
+      os_server:
+        image: 9be63e60-f4d8-488e-9200-e95bd470accf
+        key_name: kkey
+        name: Tomcat
+        availability_zone: nova
+        flavor: std.6
+        state: present
+        network: f20a238f-6355-420f-b6a2-0e18ad80f763
+        validate_certs: no
+        userdata: |
+            #cloud-config
+            package_update: true
+            packages:
+              - tomcat9
+              - tomcat9-admin
+            write_files:
+              - path: /root/tomcat-users.xml
+                content: |
+                   <?xml version='1.0' encoding='utf-8'?>
+                   <tomcat-users>
+                       <user username="admin" password="%PASS%" roles="manager-gui,admin-gui"/>
+                   </tomcat-users>
+            runcmd:
+              # Set random Tomcat admin password.
+              - sudo -i
+              - TOMCATPASS="tomcatpass"
+              - sed -i -e "s/%PASS%/$TOMCATPASS/" /root/tomcat-users.xml
+              - echo "Tomcat Username  -  admin" > /root/tomcat
+              - echo "Tomcat Password  -  $TOMCATPASS" >> /root/tomcat
+              - PUBLIC_IPV4=`curl -s curl http://169.254.169.254/latest/meta-data/public-ipv4`
+              - echo -e "\nAccess the managment interface at http://$PUBLIC_IPV4:8080/manager/html" >> /root/tomcat
+              - mv /root/tomcat-users.xml /etc/tomcat9/tomcat-users.xml
+              - systemctl start tomcat9
+              - systemctl enable tomcat9
