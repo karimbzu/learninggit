@@ -1,0 +1,30 @@
+- name: Launch a compute instance
+  hosts: localhost
+  tasks:
+    - name: Launching Ubuntu VM
+      os_server:
+        image: 9be63e60-f4d8-488e-9200-e95bd470accf
+        key_name: kkey
+        name: LAMP
+        availability_zone: nova
+        flavor: std.6
+        state: present
+        network: f20a238f-6355-420f-b6a2-0e18ad80f763
+        validate_certs: no
+        userdata: |
+             #cloud-config
+             package_update: true
+             package_upgrade: true
+             packages:
+                 - software-properties-common
+                 - wget
+                 - curl
+                 - apache2
+             runcmd:
+               - sudo -i
+               - curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
+               - sudo apt-get install php8.1 php8.1-cli php8.1-common php8.1-curl php8.1-gd php8.1-intl php8.1-mbstring php8.1-mysql php8.1-opcache php8.1-readline php8.1-xml php8.1-xsl php8.1-zip php8.1-bz2 libapache2-mod-php8.1 -y
+               - systemctl restart apache2
+               - apt install mariadb-server mariadb-client -y
+               - pw="mysql"; mysqladmin -u root -h localhost password "$pw"; echo "mysql_password=$pw" >> /home/mysql_access.txt
+               - mysqladmin reload
